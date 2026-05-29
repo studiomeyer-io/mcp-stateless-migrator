@@ -1,3 +1,7 @@
+<!-- studiomeyer-mcp-stack-banner:start -->
+> **Part of the [StudioMeyer MCP Stack](https://studiomeyer.io)** — Built in Mallorca 🌴 · ⭐ if you use it
+<!-- studiomeyer-mcp-stack-banner:end -->
+
 # mcp-stateless-migrator
 
 CLI tool that scans MCP-server codebases for incompatibilities with **MCP-Spec 2026-07-28 RC** (Stateless Core, mandatory headers, deprecated features, error-code shift, OAuth hardening, endpoint-shape changes) and applies safe AST-rewrites where mechanically possible.
