@@ -1,6 +1,6 @@
 {
   "name": "mcp-stateless-migrator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI tool that scans MCP-server codebases for incompatibilities with MCP-Spec 2026-07-28 RC (Stateless Core, mandatory headers, deprecations, error-code shift, OAuth hardening) and applies safe AST-rewrites where mechanically possible.",
   "type": "module",
   "main": "dist/index.js",
@@ -27,9 +27,12 @@
     "mcp",
     "model-context-protocol",
     "migration",
+    "codemod",
     "stateless",
     "spec-2026-07-28",
     "ast-rewrite",
+    "ast",
+    "refactor",
     "ts-morph",
     "cli"
   ],

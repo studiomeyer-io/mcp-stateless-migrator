@@ -1,17 +1,21 @@
-// Source: SEP-OAuth-Hardening https://github.com/modelcontextprotocol/specification/discussions/oauth-hardening
+// Source: SEP-2468 https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2468-recommend-issuer-claim-for-auth.md
 import { Node, type SourceFile } from "ts-morph";
 import { nodeViolation, SPEC_REVISION, type Rule, type Violation } from "./types.js";
 
 /**
- * R07 — OAuth hardening (iss validation, DCR application_type, refresh-family).
+ * R07 — OAuth hardening cluster.
  *
- * Detects:
- *  - usage of `id_token` / `iss` claim parsing without explicit `iss` check
- *  - DCR (Dynamic Client Registration) calls without `application_type`
- *  - refresh-token grant handlers without family-tracking marker
+ * The 2026-07-28 RC tightens authorization across several SEPs:
+ *  - `iss` parameter validation per RFC 9207 (SEP-2468)
+ *  - `application_type` on Dynamic Client Registration (SEP-837)
+ *  - OIDC-flavored refresh-token guidance (SEP-2207)
  *
- * Detect-only — semantic complexity is server-architecture-specific. We surface
- * the locations and link the SEP; maintainer reviews each.
+ * We surface string-literal signals so the maintainer reviews each call site.
+ * Detect-only — the semantics are server-architecture-specific.
+ *
+ * NOTE: the `iss` signal is intentionally broad and may false-positive on any
+ * literal containing the word "iss". It is `warn` + non-patchable; review the
+ * context before acting.
  */
 const SIGNALS = [/\biss\b/i, /\bid_token\b/i, /\bapplication_type\b/i, /\brefresh_token\b/i];
 
@@ -19,8 +23,8 @@ export const r07OauthHardening: Rule = {
   id: "r07-oauth-hardening",
   severity: "warn",
   autoPatchable: false,
-  source: "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
-  description: "OAuth hardening: iss validation + DCR application_type + refresh-family.",
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2468-recommend-issuer-claim-for-auth.md",
+  description: "OAuth hardening: iss validation (SEP-2468) + DCR application_type (SEP-837) + OIDC refresh (SEP-2207).",
   specRevision: SPEC_REVISION,
 
   detect(file: SourceFile): Violation[] {
@@ -33,7 +37,7 @@ export const r07OauthHardening: Rule = {
             nodeViolation(
               r07OauthHardening,
               node,
-              `OAuth signal "${v}" — verify iss/DCR/refresh-family per OAuth-Hardening SEP.`,
+              `OAuth signal "${v}" — verify iss (RFC 9207 / SEP-2468), DCR application_type (SEP-837), refresh-token (SEP-2207).`,
             ),
           );
         }

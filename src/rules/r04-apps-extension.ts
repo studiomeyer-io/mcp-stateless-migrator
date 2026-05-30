@@ -1,24 +1,30 @@
-// Source: SEP-1865 https://github.com/modelcontextprotocol/specification/pull/1865
+// Source: SEP-1865 https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp.md
 import { Node, type SourceFile } from "ts-morph";
 import { nodeViolation, SPEC_REVISION, type Rule, type Violation } from "./types.js";
 
 /**
- * R04 — Apps Extension (SEP-1865) surface detection.
+ * R04 — MCP Apps extension (SEP-1865) surface detection.
  *
- * If the codebase mentions `mcp-apps`, `apps/render`, or `sandboxed-iframe`,
- * the server is participating in the Apps Extension surface. We report this as
- * `info` so the maintainer can confirm sandboxed-iframe support is configured
- * correctly. Not auto-patchable — the iframe-sandbox configuration is
- * deployment-specific.
+ * The MCP Apps extension is identified by `io.modelcontextprotocol/ui` and
+ * declares interactive UI resources via the `ui://` URI scheme with the
+ * `text/html;profile=mcp-app` content type, rendered in a sandboxed iframe.
+ * If the codebase references any of these markers it participates in the Apps
+ * surface. Reported as `info` so the maintainer can confirm sandboxed-iframe +
+ * CSP configuration — not auto-patchable (deployment-specific).
  */
-const PATTERNS = [/\bmcp-apps\b/i, /\bapps\/render\b/i, /\bsandboxed-iframe\b/i];
+const PATTERNS = [
+  /^ui:\/\//i, // ui:// resource scheme
+  /text\/html;\s*profile=mcp-app/i, // MCP Apps content type
+  /io\.modelcontextprotocol\/ui/i, // extension identifier
+  /\bsandboxed-iframe\b/i, // deployment / CSP signal
+];
 
 export const r04AppsExtension: Rule = {
   id: "r04-apps-extension",
   severity: "info",
   autoPatchable: false,
-  source: "https://github.com/modelcontextprotocol/specification/pull/1865",
-  description: "MCP Apps Extension (SEP-1865) surface detected — review sandboxed-iframe config.",
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp.md",
+  description: "MCP Apps Extension (SEP-1865, io.modelcontextprotocol/ui) surface detected — review ui:// + sandboxed-iframe/CSP config.",
   specRevision: SPEC_REVISION,
 
   detect(file: SourceFile): Violation[] {
@@ -31,7 +37,7 @@ export const r04AppsExtension: Rule = {
             nodeViolation(
               r04AppsExtension,
               node,
-              `Apps-Extension reference "${v}" — verify sandboxed-iframe headers + CSP.`,
+              `MCP Apps (SEP-1865) surface "${v}" — verify ui:// resources, text/html;profile=mcp-app content type, and sandboxed-iframe + CSP config.`,
             ),
           );
         }

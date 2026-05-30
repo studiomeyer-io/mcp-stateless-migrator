@@ -42,4 +42,32 @@ describe("r01-stateless-core", () => {
     const report = await scanPath(fx.dir, { only: ["r01-stateless-core"] });
     expect(report.violations).toHaveLength(1);
   });
+
+  it("matches the all-uppercase MCP-SESSION-ID form", async () => {
+    const fx = makeFixture({
+      "server.ts": `export const H = "MCP-SESSION-ID";`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r01-stateless-core"] });
+    expect(report.violations).toHaveLength(1);
+  });
+
+  it("matches a no-substitution template literal form", async () => {
+    const fx = makeFixture({
+      "server.ts": "export const H = `Mcp-Session-Id`;",
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r01-stateless-core"] });
+    expect(report.violations).toHaveLength(1);
+  });
+
+  it("does not match when the header is only a substring of a longer literal", async () => {
+    // PATTERN is anchored (^...$) so a longer literal must not match.
+    const fx = makeFixture({
+      "server.ts": `export const H = "x-mcp-session-id-legacy";`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r01-stateless-core"] });
+    expect(report.violations).toHaveLength(0);
+  });
 });

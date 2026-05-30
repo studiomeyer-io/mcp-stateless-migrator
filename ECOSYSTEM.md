@@ -6,7 +6,7 @@ How `mcp-stateless-migrator` relates to neighbouring tools in the MCP Factory.
 
 | Tool | Language | Source spec | Target spec | Auto-patch |
 |------|----------|-------------|-------------|------------|
-| `mcp-spec-migrator-2511` | Rust crate | `2025-06-18` | `2025-11-25` | partial |
+| [`mcp-spec-migrator`](https://www.npmjs.com/package/mcp-spec-migrator) | TypeScript CLI | `2025-06-18` | `2025-11-25` | partial |
 | **`mcp-stateless-migrator`** | TypeScript CLI | `2025-11-25` | `2026-07-28-rc` | partial (only `r06-error-code-shift`) |
 
 The Rust migrator is for older codebases moving up to the current production spec. This tool picks up where it leaves off and prepares servers for the upcoming Stateless Core revision. A Rust port (`mcp-stateless-migrator-rs`) is out of scope for v0.1 — re-evaluate once the official Rust SDK `rmcp` finalises 2026-07-28 support.
@@ -15,7 +15,7 @@ The Rust migrator is for older codebases moving up to the current production spe
 
 | Tool | Role |
 |------|------|
-| `mcp-protocol-conformance` | Runtime validator (does my server speak the spec correctly *right now*?) |
+| [`mcp-protocol-conformance`](https://github.com/studiomeyer-io/mcp-protocol-conformance) (Rust) | Runtime validator (does my server speak the spec correctly *right now*?) |
 | `mcp-hook-conformance` | Hook-lifecycle validator (SEP-1865 MCP Apps) |
 | `mcp-stateless-migrator` | Static migrator (will my server still work *after* the spec bumps?) |
 
@@ -27,9 +27,9 @@ You typically run `mcp-stateless-migrator patch` first, then `mcp-protocol-confo
 
 ## Spec sources
 
-- Current reference: [MCP Spec 2025-11-25](https://spec.modelcontextprotocol.io/).
+- Current reference: [MCP Spec 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25).
 - Target: [Release Candidate 2026-07-28](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/), locked snapshot `2026-05-21`.
-- SEP tracker: https://github.com/modelcontextprotocol/specification/pulls
+- SEP index: https://modelcontextprotocol.io/seps
 
 ## Why static analysis, not runtime
 

@@ -4,11 +4,16 @@
 
 # mcp-stateless-migrator
 
+[![npm version](https://img.shields.io/npm/v/mcp-stateless-migrator.svg)](https://www.npmjs.com/package/mcp-stateless-migrator)
+[![CI](https://github.com/studiomeyer-io/mcp-stateless-migrator/actions/workflows/ci.yml/badge.svg)](https://github.com/studiomeyer-io/mcp-stateless-migrator/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/studiomeyer-io/mcp-stateless-migrator/badge)](https://scorecard.dev/viewer/?uri=github.com/studiomeyer-io/mcp-stateless-migrator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 CLI tool that scans MCP-server codebases for incompatibilities with **MCP-Spec 2026-07-28 RC** (Stateless Core, mandatory headers, deprecated features, error-code shift, OAuth hardening, endpoint-shape changes) and applies safe AST-rewrites where mechanically possible.
 
 Target users: maintainers of TypeScript/JavaScript MCP servers (the largest SDK userbase, `@modelcontextprotocol/sdk`).
 
-Status: `v0.1.0` — pre-final-RC. Detection rules are tagged with `specRevision: 2026-07-28-rc-2026-05-21`. `v0.2.0` will re-validate against the Tier-1 SDK final release.
+Status: `v0.1.1` — pre-final-RC. Detection rules are tagged with `specRevision: 2026-07-28-rc-2026-05-21` and cite the canonical SEP files. `v0.2.0` will re-validate against the Tier-1 SDK final release.
 
 ## Install
 
@@ -35,16 +40,16 @@ Requires **Node >= 20**.
 
 | Rule | Severity | Auto-patch | Source |
 |------|----------|------------|--------|
-| `r01-stateless-core` | warn | no | Stateless Core (2026-07-28 RC blogpost) |
-| `r02-mandatory-headers` | error | no | [SEP-2243](https://github.com/modelcontextprotocol/specification/pull/2243) |
-| `r03-tasks-extension` | warn | no | Tasks Extension (2026-07-28 RC blogpost) |
-| `r04-apps-extension` | info | no | [SEP-1865](https://github.com/modelcontextprotocol/specification/pull/1865) |
-| `r05-deprecations` | warn | no | [SEP-2577](https://github.com/modelcontextprotocol/specification/pull/2577) |
-| `r06-error-code-shift` | error | **yes** | [SEP-2164](https://github.com/modelcontextprotocol/specification/pull/2164) |
-| `r07-oauth-hardening` | critical | no | OAuth Hardening SEP |
-| `r08-endpoint-shape` | warn | no | Streamable HTTP shape (2026-07-28 RC blogpost) |
+| `r01-stateless-core` | warn | no | [SEP-2567](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2567-sessionless-mcp.md) |
+| `r02-mandatory-headers` | info | no | [SEP-2243](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2243-http-standardization.md) |
+| `r03-tasks-extension` | warn | no | [SEP-2663](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2663-tasks-extension.md) |
+| `r04-apps-extension` | info | no | [SEP-1865](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp.md) |
+| `r05-deprecations` | warn | no | [SEP-2577](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2577-deprecate-roots-sampling-and-logging.md) |
+| `r06-error-code-shift` | error | **yes** | [SEP-2164](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2164-resource-not-found-error.md) |
+| `r07-oauth-hardening` | warn | no | [SEP-2468](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2468-recommend-issuer-claim-for-auth.md) |
+| `r08-endpoint-shape` | warn | no | [SEP-2596](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2596-spec-feature-lifecycle-and-deprecation.md) |
 
-Only `r06` rewrites code automatically. Every other rule requires a human reviewing the planned change — server architecture varies too much for blind auto-patching.
+Only `r06` rewrites code automatically — and SEP-2164 is **Draft** status as of the RC, so re-validate before the final spec; every patch is backed up by default. Every other rule requires a human reviewing the planned change — server architecture varies too much for blind auto-patching.
 
 ## Usage
 
@@ -88,8 +93,8 @@ await patchPath("./src", { dryRun: false, backup: true, only: ["r06-error-code-s
 ## Ecosystem
 
 This tool complements:
-- [`mcp-spec-migrator-2511`](https://crates.io/crates/mcp-spec-migrator) — Rust + previous spec (`2025-06-18 -> 2025-11-25`).
-- [`mcp-protocol-conformance`](https://crates.io/crates/mcp-protocol-conformance) — Rust runtime validator.
+- [`mcp-spec-migrator`](https://www.npmjs.com/package/mcp-spec-migrator) — TypeScript CLI for the previous spec step (`2025-06-18 -> 2025-11-25`).
+- [`mcp-protocol-conformance`](https://github.com/studiomeyer-io/mcp-protocol-conformance) — Rust runtime conformance validator.
 
 See [ECOSYSTEM.md](./ECOSYSTEM.md) for the full positioning matrix.
 

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-05-30
+
+### Fixed
+
+- **r06 auto-patch correctness:** the error-code rewrite now collects all matching nodes before mutating instead of replacing during AST traversal, so files containing more than one `{ code: -32002 }` are fully and idempotently patched. Added a multi-occurrence regression test.
+- **Canonical SEP citations:** every rule's `Source` link now points at the canonical SEP file in `modelcontextprotocol/modelcontextprotocol/seps/` (previous `discussions/...` and `specification/pull/...` links were non-canonical or did not resolve). r01 → SEP-2567, r03 → SEP-2663, r07 → SEP-2468, r08 → SEP-2596.
+- **r03 (Tasks):** stops conflating removed methods with extension methods — `tasks/list` + `tasks/result` are reported as *removed* (a server still answering `tasks/result` MUST return `-32601`), while `tasks/get`/`tasks/update`/`tasks/cancel` are reported as *extension-only* (valid under `io.modelcontextprotocol/tasks`, SEP-2663).
+- **r04 (MCP Apps):** detects the real SEP-1865 surface — the `ui://` resource scheme, the `text/html;profile=mcp-app` content type, and the `io.modelcontextprotocol/ui` identifier — instead of markers that never appear in the SEP.
+- **r08 (transport):** no longer flags `streamableHttp` (the *current* transport); detects the legacy HTTP+SSE paths `/sse` + `/messages`, deprecated under SEP-2596.
+- **r05 (deprecations):** also detects `notifications/roots/list_changed` and `notifications/message`.
+- **README severity drift:** the detection-rules table now matches the code — `r02-mandatory-headers` is `info` and `r07-oauth-hardening` is `warn`.
+
+### Changed
+
+- `r02` message + docs clarify that `Mcp-Method`/`Mcp-Name` come from SEP-2243 while the protocol version travels per-request via `_meta` (SEP-2575), not a header.
+- `patcher` counts a file as modified by comparing actual text before/after (ground truth) instead of trusting a rule's `applied` flag; removed a dead `continue`.
+- Marked the internal `_SyntaxKindMarker` export `@internal`.
+- Corrected ecosystem links: `mcp-spec-migrator` is a TypeScript npm CLI (not a Rust crate) and `mcp-protocol-conformance` is a Rust tool on GitHub; both prior `crates.io` links were dead. Refreshed MCP spec / SEP reference URLs.
+
+### Added
+
+- OpenSSF Scorecard + CodeQL workflows, README status badges (npm / CI / Scorecard / license), and an issue-template `config.yml` (`blank_issues_enabled: false` + private security-report link).
+- Expanded the test suite from 39 to 131 tests: scanner aggregation + ignore-globs + skip-on-parse-error, reporter formats (json/text/md/html), patcher diff/backup/dry-run/changelog-hint, rule-registry invariants, and per-rule edge cases (incl. the r06 multi-occurrence regression).
+
+[0.1.1]: https://github.com/studiomeyer-io/mcp-stateless-migrator/releases/tag/v0.1.1
+
 ## [0.1.0] - 2026-05-26
 
 ### Added

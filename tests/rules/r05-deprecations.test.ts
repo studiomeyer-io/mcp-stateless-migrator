@@ -31,4 +31,33 @@ describe("r05-deprecations", () => {
     const report = await scanPath(fx.dir, { only: ["r05-deprecations"] });
     expect(report.violations).toHaveLength(0);
   });
+
+  it("flags notifications/roots/list_changed", async () => {
+    const fx = makeFixture({
+      "d.ts": `export const N = "notifications/roots/list_changed";`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r05-deprecations"] });
+    expect(report.violations).toHaveLength(1);
+    expect(report.violations[0]!.severity).toBe("warn");
+  });
+
+  it("flags notifications/message (deprecated logging notification)", async () => {
+    const fx = makeFixture({
+      "d.ts": `export const N = "notifications/message";`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r05-deprecations"] });
+    expect(report.violations).toHaveLength(1);
+  });
+
+  it("requires an exact match — a longer literal is not flagged", async () => {
+    // DEPRECATED_METHODS uses a Set with exact equality, not substring.
+    const fx = makeFixture({
+      "d.ts": `export const N = "roots/list/all";`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r05-deprecations"] });
+    expect(report.violations).toHaveLength(0);
+  });
 });

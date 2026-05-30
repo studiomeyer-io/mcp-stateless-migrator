@@ -1,4 +1,4 @@
-// Source: SEP-2164 https://github.com/modelcontextprotocol/specification/pull/2164
+// Source: SEP-2164 https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2164-resource-not-found-error.md
 import { Node, SyntaxKind, type SourceFile } from "ts-morph";
 import {
   nodeViolation,
@@ -9,11 +9,18 @@ import {
 } from "./types.js";
 
 /**
- * R06 — Error code shift -32002 -> -32602 (SEP-2164).
+ * R06 — Resource-not-found error code shift -32002 -> -32602 (SEP-2164).
  *
- * The old `-32002` (custom server error) collides with downstream JSON-RPC
- * proxies and is replaced by the more semantically appropriate `-32602`
- * (invalid params). Mechanically auto-patchable: numeric literal swap.
+ * The MCP-custom `-32002` ("resource not found") sits in the JSON-RPC
+ * server-error range and is replaced by the standard `-32602` (Invalid Params).
+ * Mechanically auto-patchable: numeric-literal swap inside an object property
+ * named `code`.
+ *
+ * This is the ONLY rule that mutates code. Safeguards:
+ *  - SEP-2164 is Draft status as of the 2026-07-28 RC — re-validate before final.
+ *  - `patch` writes a `.bak.<ts>/` backup by default; every change is reversible.
+ *  - The swap targets the resource-not-found case; if a server uses -32002 for an
+ *    unrelated implementation-defined error, review the diff before applying.
  *
  * We only rewrite literals inside an object property named `code` to avoid
  * touching unrelated numbers (e.g. timeouts, ports).
@@ -37,54 +44,52 @@ function matchesOldCode(node: Node): boolean {
       return true;
     }
   }
-  // Plain numeric literal already negative? TypeScript represents -N as
-  // PrefixUnary, but we also accept the literal "32002" if used as
-  // `Math.sign * 32002` — handled above. Direct numeric -32002 lives in
-  // PrefixUnary, so this branch is the precaution for parsed JSON.
   return false;
+}
+
+function collectTargets(file: SourceFile): Node[] {
+  const targets: Node[] = [];
+  file.forEachDescendant((node) => {
+    if (matchesOldCode(node) && isCodeProperty(node)) targets.push(node);
+  });
+  return targets;
 }
 
 export const r06ErrorCodeShift: Rule = {
   id: "r06-error-code-shift",
   severity: "error",
   autoPatchable: true,
-  source: "https://github.com/modelcontextprotocol/specification/pull/2164",
-  description: "Error code -32002 -> -32602 (SEP-2164). Auto-patch on { code: -32002 } props.",
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2164-resource-not-found-error.md",
+  description:
+    "Resource-not-found error code -32002 -> -32602 (SEP-2164, Draft). Auto-patch on { code: -32002 } props.",
   specRevision: SPEC_REVISION,
 
   detect(file: SourceFile): Violation[] {
-    const violations: Violation[] = [];
-    file.forEachDescendant((node) => {
-      if (matchesOldCode(node) && isCodeProperty(node)) {
-        violations.push(
-          nodeViolation(
-            r06ErrorCodeShift,
-            node,
-            "Error code -32002 must shift to -32602 per SEP-2164.",
-          ),
-        );
-      }
-    });
-    return violations;
+    return collectTargets(file).map((node) =>
+      nodeViolation(
+        r06ErrorCodeShift,
+        node,
+        "Error code -32002 must shift to -32602 (Invalid Params) per SEP-2164.",
+      ),
+    );
   },
 
   patch(file: SourceFile): PatchResult[] {
-    const results: PatchResult[] = [];
-    let changed = 0;
-    file.forEachDescendant((node) => {
-      if (matchesOldCode(node) && isCodeProperty(node)) {
-        // PrefixUnaryExpression: replace with new literal "-32602".
-        node.replaceWithText(String(NEW_CODE));
-        changed += 1;
-      }
-    });
-    if (changed > 0) {
-      results.push({
+    const targets = collectTargets(file);
+    if (targets.length === 0) return [];
+    // Replace right-to-left so an earlier rewrite never invalidates the source
+    // position of a node we still have to visit (forEachDescendant must NOT
+    // mutate mid-traversal — collect first, then mutate).
+    targets.sort((a, b) => b.getStart() - a.getStart());
+    for (const node of targets) {
+      node.replaceWithText(String(NEW_CODE));
+    }
+    return [
+      {
         ruleId: r06ErrorCodeShift.id,
         file: file.getFilePath(),
         applied: true,
-      });
-    }
-    return results;
+      },
+    ];
   },
 };

@@ -1,22 +1,24 @@
-// Source: SEP-Streamable-HTTP-Endpoint-Shape https://github.com/modelcontextprotocol/specification/discussions/streamable-http-shape
+// Source: SEP-2596 https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2596-spec-feature-lifecycle-and-deprecation.md
 import { Node, type SourceFile } from "ts-morph";
 import { nodeViolation, SPEC_REVISION, type Rule, type Violation } from "./types.js";
 
 /**
- * R08 — Streamable HTTP endpoint shape changes.
+ * R08 — Legacy HTTP+SSE transport endpoint shape.
  *
- * Detects literal "streamableHttp" and "/messages" path strings (old shape).
- * Servers must move to the new endpoint contract (request-id in query, no
- * persistent SSE). Detect-only.
+ * The 2024-11-05 HTTP+SSE transport (a `/sse` GET event-stream plus a
+ * `/messages` POST endpoint) is Deprecated and reclassified under the feature
+ * lifecycle policy (SEP-2596). The sessionless rework (SEP-2567) removes the
+ * per-connection session those paths assumed. Servers should expose the single
+ * Streamable HTTP endpoint instead. Detect-only.
  */
-const OLD_SHAPE_PATTERNS = [/streamableHttp/, /^\/messages$/, /^\/sse$/];
+const OLD_SHAPE_PATTERNS = [/^\/messages$/, /^\/sse$/];
 
 export const r08EndpointShape: Rule = {
   id: "r08-endpoint-shape",
   severity: "warn",
   autoPatchable: false,
-  source: "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
-  description: "Streamable HTTP endpoint shape changed (no /messages or /sse persistent path).",
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2596-spec-feature-lifecycle-and-deprecation.md",
+  description: "Legacy HTTP+SSE transport (/sse + /messages) deprecated (SEP-2596) — move to the single Streamable HTTP endpoint.",
   specRevision: SPEC_REVISION,
 
   detect(file: SourceFile): Violation[] {
@@ -29,7 +31,7 @@ export const r08EndpointShape: Rule = {
             nodeViolation(
               r08EndpointShape,
               node,
-              `Endpoint shape "${v}" deprecated in 2026-07-28 RC.`,
+              `Legacy transport path "${v}" — HTTP+SSE is deprecated (SEP-2596); migrate to the single Streamable HTTP endpoint.`,
             ),
           );
         }

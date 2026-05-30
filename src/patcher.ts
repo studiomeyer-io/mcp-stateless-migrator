@@ -68,16 +68,12 @@ export async function patchPath(
   for (const file of loaded.files) {
     const before = file.getFullText();
     for (const rule of patchableRules) {
-      const ruleResults = rule.patch!(file);
-      for (const r of ruleResults) {
-        results.push(r);
-        if (r.applied) modifiedFiles.add(r.file);
-      }
+      results.push(...rule.patch!(file));
     }
-    const after = file.getFullText();
-    if (before === after) {
-      // ts-morph mutates the in-memory text; nothing to write.
-      continue;
+    // Ground truth: a file counts as modified only if its text actually
+    // changed — not merely because a rule reported applied:true.
+    if (file.getFullText() !== before) {
+      modifiedFiles.add(file.getFilePath());
     }
   }
 
