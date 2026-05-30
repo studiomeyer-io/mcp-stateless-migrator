@@ -41,8 +41,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -52,9 +50,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      # Publishes only when NPM_TOKEN is configured. Until then releases are
-      # published manually (`npm publish`) by a maintainer; this step skips
-      # cleanly so tag CI stays green.
+      # Runtime guard: publish only when NPM_TOKEN is configured. Until a token
+      # is added, releases are published manually (`npm publish`) by a maintainer
+      # and this job stays green.
+      - name: Check for npm token
+        id: npmtok
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "NPM_TOKEN is not set — skipping publish (this release is published manually)."
+          fi
       - name: Publish to npm
-        if: env.NODE_AUTH_TOKEN != ''
+        if: steps.npmtok.outputs.present == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public
