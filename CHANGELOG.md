@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-06-21
+
+### Fixed
+
+- **r06 auto-patch correctness (missed cases):** the resource-not-found error-code rewrite now recognises every hand-written spelling of a `code` property, not just an identifier key. It previously *silently skipped* `{ "code": -32002 }` / `{ 'code': -32002 }` (string-literal keys) and `class E { code = -32002 }` (class fields), leaving a non-conformant error code in place. Property-name matching is normalised (surrounding quotes stripped) while computed keys (`{ [k]: -32002 }`) and any property not named exactly `code` (e.g. `data`, `status`, `codeValue`) stay untouched — no false rewrites. Added detection + patch + idempotency fixtures for each spelling plus the must-not-rewrite cases. Symbolic `ErrorCode.ResourceNotFound` / positional `McpError(-32002, …)` sites remain deliberately out of scope (no safe mechanical mapping) and are documented as such.
+
+### Added
+
+- `typecheck` npm script (`tsc --noEmit -p tsconfig.typecheck.json`) that type-checks `src` **and** `tests` under the strict compiler options, wired into CI before the test run so test-only type regressions can no longer slip through.
+- e2e idempotency coverage: a second full-fleet `patch` over a realistic multi-rule server is asserted to be a byte-for-byte no-op with an empty planned diff, and `diff` is asserted to be stable + read-only across repeated calls.
+
+[0.1.2]: https://github.com/studiomeyer-io/mcp-stateless-migrator/releases/tag/v0.1.2
+
 ## [0.1.1] - 2026-05-30
 
 ### Fixed

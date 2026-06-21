@@ -13,7 +13,7 @@ CLI tool that scans MCP-server codebases for incompatibilities with **MCP-Spec 2
 
 Target users: maintainers of TypeScript/JavaScript MCP servers (the largest SDK userbase, `@modelcontextprotocol/sdk`).
 
-Status: `v0.1.1` — pre-final-RC. Detection rules are tagged with `specRevision: 2026-07-28-rc-2026-05-21` and cite the canonical SEP files. `v0.2.0` will re-validate against the Tier-1 SDK final release.
+Status: `v0.1.2` — pre-final-RC. Detection rules are tagged with `specRevision: 2026-07-28-rc-2026-05-21` and cite the canonical SEP files. `v0.2.0` will re-validate against the Tier-1 SDK final release.
 
 ## Install
 
@@ -49,7 +49,7 @@ Requires **Node >= 20**.
 | `r07-oauth-hardening` | warn | no | [SEP-2468](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2468-recommend-issuer-claim-for-auth.md) |
 | `r08-endpoint-shape` | warn | no | [SEP-2596](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2596-spec-feature-lifecycle-and-deprecation.md) |
 
-Only `r06` rewrites code automatically — and SEP-2164 is **Draft** status as of the RC, so re-validate before the final spec; every patch is backed up by default. Every other rule requires a human reviewing the planned change — server architecture varies too much for blind auto-patching.
+Only `r06` rewrites code automatically — it swaps `-32002 -> -32602` inside any property named `code` (identifier key, `"code"`/`'code'` string key, or class field), and leaves computed keys and same-value-but-different-name properties untouched. SEP-2164 is **Draft** status as of the RC, so re-validate before the final spec; every patch is backed up by default. Every other rule requires a human reviewing the planned change — server architecture varies too much for blind auto-patching.
 
 ## Usage
 
