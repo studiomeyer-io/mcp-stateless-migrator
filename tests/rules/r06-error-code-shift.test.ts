@@ -129,3 +129,121 @@ describe("r06-error-code-shift", () => {
     expect(second.violations).toHaveLength(0);
   });
 });
+describe("r06-error-code-shift — property-name spellings (correctness)", () => {
+  let cleanup: (() => void) | null = null;
+  afterEach(() => {
+    cleanup?.();
+    cleanup = null;
+  });
+
+  // --- cases that MUST be detected + rewritten -----------------------------
+
+  it('detects a double-quoted string-literal key { "code": -32002 }', async () => {
+    const fx = makeFixture({
+      "err.ts": `export const E = { "code": -32002, message: "missing" };`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(1);
+    expect(report.violations[0]!.autoPatchable).toBe(true);
+  });
+
+  it("detects a single-quoted string-literal key { 'code': -32002 }", async () => {
+    const fx = makeFixture({
+      "err.ts": `export const E = { 'code': -32002 };`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(1);
+  });
+
+  it("detects a class field `code = -32002` (PropertyDeclaration)", async () => {
+    const fx = makeFixture({
+      "err.ts": `export class ResourceError { code = -32002; message = "missing"; }`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(1);
+  });
+
+  it("patches string-key + class-field spellings and is idempotent", async () => {
+    const fx = makeFixture({
+      "err.ts":
+        `export const E = { "code": -32002 };\n` +
+        `export class F { code = -32002; }\n`,
+    });
+    cleanup = fx.cleanup;
+    const result = await patchPath(fx.dir, {
+      dryRun: false,
+      backup: false,
+      only: ["r06-error-code-shift"],
+    });
+    expect(result.patchedFiles).toBe(1);
+    const after = fs.readFileSync(path.join(fx.dir, "err.ts"), "utf8");
+    expect(after).not.toContain("-32002");
+    expect(after.match(/-32602/g)).toHaveLength(2);
+    // The quoting/declaration shape must survive the rewrite.
+    expect(after).toContain(`"code": -32602`);
+    expect(after).toContain(`code = -32602`);
+    // Re-running is a no-op.
+    const second = await patchPath(fx.dir, {
+      dryRun: false,
+      backup: false,
+      only: ["r06-error-code-shift"],
+    });
+    expect(second.patchedFiles).toBe(0);
+    const rescan = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(rescan.violations).toHaveLength(0);
+  });
+
+  // --- cases that MUST NOT be touched (no false rewrites) -------------------
+
+  it("does NOT match a computed key { [k]: -32002 }", async () => {
+    // The key is not statically known to be `code`, so rewriting it could
+    // corrupt an unrelated value.
+    const fx = makeFixture({
+      "err.ts": `const k = "code"; export const E = { [k]: -32002 };`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(0);
+  });
+
+  it("does NOT match a property whose name merely starts with `code`", async () => {
+    const fx = makeFixture({
+      "err.ts": `export const E = { codeValue: -32002, "code_x": -32002 };`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(0);
+  });
+
+  it("does NOT match a string-keyed property NOT named code", async () => {
+    const fx = makeFixture({
+      "err.ts": `export const E = { "data": -32002 };`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(0);
+  });
+
+  it("does NOT match a class field NOT named code", async () => {
+    const fx = makeFixture({
+      "err.ts": `export class F { status = -32002; }`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(0);
+  });
+
+  it("does NOT touch -32002 passed positionally to a constructor", async () => {
+    // Symbolic / positional sites are deliberately out of scope (no mechanical
+    // literal to map safely) — must stay a no-op so we never corrupt arguments.
+    const fx = makeFixture({
+      "err.ts": `export const e = new McpError(-32002, "missing");`,
+    });
+    cleanup = fx.cleanup;
+    const report = await scanPath(fx.dir, { only: ["r06-error-code-shift"] });
+    expect(report.violations).toHaveLength(0);
+  });
+});
