@@ -18,6 +18,16 @@ import { nodeViolation, SPEC_REVISION, type Rule, type Violation } from "./types
  */
 const SIGNAL_HEADERS = ["MCP-Protocol-Version", "Mcp-Method", "Mcp-Name"] as const;
 
+/**
+ * Escape *every* regex metacharacter, not just the hyphen. The header list is
+ * a compile-time constant today, so this is not exploitable — but the old
+ * `replace(/-/g, "\\-")` left backslash and friends untouched, which turns any
+ * future entry with a metacharacter into a silently wrong or throwing pattern.
+ */
+function escapeRegExp(literal: string): string {
+  return literal.replace(/[.*+?^${}()|[\]\\-]/g, "\\$&");
+}
+
 export const r02MandatoryHeaders: Rule = {
   id: "r02-mandatory-headers",
   severity: "info",
@@ -32,7 +42,7 @@ export const r02MandatoryHeaders: Rule = {
     const seen = new Set<string>();
     for (const header of SIGNAL_HEADERS) {
       // case-insensitive whole-token-ish presence check on the file text.
-      const re = new RegExp(`\\b${header.replace(/-/g, "\\-")}\\b`, "i");
+      const re = new RegExp(`\\b${escapeRegExp(header)}\\b`, "i");
       if (re.test(text)) seen.add(header);
     }
     if (seen.size === 0 || seen.size === SIGNAL_HEADERS.length) return [];
