@@ -12,11 +12,15 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+  # Monatlich und als EINE Gruppe wie in den anderen Repos der Org. Ohne
+  # Gruppe kamen codeql-action/init, /analyze und /upload-sarif in drei
+  # einzelnen PRs, jede mit gemischten Versionen, und der Analyze-Schritt
+  # scheiterte daran ("Not all workflow steps that use github/codeql-action
+  # actions use the same version", PR #43 und #44 im September 2026).
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
     open-pull-requests-limit: 3
     labels:
       - "dependencies"
@@ -24,3 +28,7 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
+    groups:
+      actions:
+        patterns:
+          - "*"
