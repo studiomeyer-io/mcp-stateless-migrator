@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+
+- Replace the unpatched fast-glob/braces scan dependency with tinyglobby.
+- Validate file-pattern budgets before matching: at most 128 patterns,
+  1024 UTF-16 code units per pattern, and 16 unescaped opening grouping
+  characters (`(`, `{`, `[`) per pattern. Over-budget input raises a
+  controlled error.
+
+### Changed
+
+- Custom absolute include patterns use ignore rules relative to the scan
+  root. An ignored ancestor of an explicitly selected root no longer removes
+  every match beneath it. Prefer patterns relative to the scan root.
+
+
 ## [0.1.2] - 2026-06-21
 
 ### Fixed

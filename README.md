@@ -90,6 +90,13 @@ console.log(formatScan(report, "json"));
 await patchPath("./src", { dryRun: false, backup: true, only: ["r06-error-code-shift"] });
 ```
 
+Custom `patterns` accept at most 128 strings. Each string is limited to 1024
+UTF-16 code units and 16 unescaped opening grouping characters (`(`, `{`,
+`[`). Inputs above these budgets raise a controlled error before matching.
+Use patterns relative to the scan root. Ignore rules apply within that root;
+an ignored name in an ancestor path does not exclude an explicitly selected
+root.
+
 ## Ecosystem
 
 This tool complements:
