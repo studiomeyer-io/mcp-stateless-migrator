@@ -1,6 +1,6 @@
 import path from "node:path";
 import fs from "node:fs";
-import fg from "fast-glob";
+import { glob } from "tinyglobby";
 import { Project, ScriptTarget, ModuleKind, type SourceFile } from "ts-morph";
 import { RULES, SPEC_REVISION, type ScanReport, type Violation, type Severity, type Rule } from "./rules/index.js";
 
@@ -27,7 +27,10 @@ const IGNORE = [
 export interface LoadOptions {
   /** Restrict to a subset of rule ids (optional). */
   only?: ReadonlyArray<string>;
-  /** Override file globs. */
+  /**
+   * Override file globs: at most 128 patterns, each at most 1024 characters
+   * and 16 unescaped opening grouping characters: (, {, [.
+   */
   patterns?: ReadonlyArray<string>;
 }
 
@@ -36,6 +39,31 @@ export interface LoadedProject {
   files: SourceFile[];
   rules: ReadonlyArray<Rule>;
   rootPath: string;
+}
+
+function validateGlobPatterns(patterns: readonly string[], option: string): void {
+  if (patterns.length > 128) {
+    throw new Error(`${option} accepts at most 128 glob patterns`);
+  }
+  for (const pattern of patterns) {
+    if (pattern.length > 1024) {
+      throw new Error(`${option} patterns must not exceed 1024 characters`);
+    }
+    let groups = 0;
+    for (let index = 0; index < pattern.length; index++) {
+      const character = pattern[index];
+      if (character === "\\") {
+        index++;
+        continue;
+      }
+      if (character === "(" || character === "{" || character === "[") {
+        groups++;
+        if (groups > 16) {
+          throw new Error(`${option} patterns allow at most 16 unescaped opening grouping characters`);
+        }
+      }
+    }
+  }
 }
 
 function resolveRoot(targetPath: string): string {
@@ -50,10 +78,13 @@ function resolveRoot(targetPath: string): string {
 export async function loadProject(targetPath: string, opts: LoadOptions = {}): Promise<LoadedProject> {
   const root = resolveRoot(targetPath);
   const patterns = opts.patterns ?? DEFAULT_GLOBS;
-  const files = await fg(patterns as string[], {
+  validateGlobPatterns(patterns, "patterns");
+  validateGlobPatterns(IGNORE, "ignore");
+  const files = await glob(patterns, {
     cwd: root,
     ignore: IGNORE,
     absolute: true,
+    expandDirectories: false,
     dot: false,
     followSymbolicLinks: false,
   });
