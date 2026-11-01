@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.3] - 2026-11-01
+
+
+### Dependency maintenance
+
+- Bundle the pinned ts-morph dependency closure so the patched minimatch tree reaches installed npm consumers. A root-only override does not travel with an installed package.
+- Run build plus version-checked bundle preparation in prepack. Disclose the @ts-morph/common 0.29.0 minimatch range adjustment (^10.0.1 to ^11.0.3) in dist/bundled-dependencies.json; preserve third-party source and version fields.
+- Preserve full upstream legal text for all 11 bundled package instances. Check actual tarball payloads against approved version-specific full-text hashes from official integrity-verified npm archives, including complete README license sections where applicable. Whitespace-only differences are accepted; 3 missing/empty/partial-license regression cases fail as intended.
+- The checked Node 20/22 runs pass 155 tests per runtime. Two fresh installed consumers have consistent npm ls trees and zero findings in all-dependency/production audits. Repeated packs and Node 20/22 archive bytes match for the checked inputs.
+- Measured archive size: approximately 2.74 MB compressed / 15.65 MB unpacked. This bundle is larger because it includes its selected dependency closure.
 
 ### Security
 
