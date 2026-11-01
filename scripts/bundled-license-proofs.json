@@ -1,0 +1,182 @@
+{
+  "formatVersion": 1,
+  "normalization": "trim and collapse Unicode whitespace; case and all non-whitespace content are exact",
+  "packages": {
+    "@isaacs/nonrecursive-glob-match@1.0.3": {
+      "name": "@isaacs/nonrecursive-glob-match",
+      "version": "1.0.3",
+      "license": "BlueOak-1.0.0",
+      "source": "https://registry.npmjs.org/@isaacs/nonrecursive-glob-match/-/nonrecursive-glob-match-1.0.3.tgz",
+      "integrity": "sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==",
+      "files": [
+        {
+          "path": "LICENSE.md",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "61c644f13191f65c6ff4e58322c5d92ca44702c37ef0e1bc36f08af1021835a7",
+          "upstreamFileSha256": "8a1af140fdfbf5afd3df27f7e662f989c5b963a300020dfafce42033cae9e004",
+          "upstreamBytes": 1552
+        }
+      ]
+    },
+    "@ts-morph/common@0.29.0": {
+      "name": "@ts-morph/common",
+      "version": "0.29.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/@ts-morph/common/-/common-0.29.0.tgz",
+      "integrity": "sha512-35oUmphHbJvQ/+UTwFNme/t2p3FoKiGJ5auTjjpNTop2dyREspirjMy82PLSC1pnDJ8ah1GU98hwpVt64YXQsg==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "675d36341f5bd44573287087a92e9f33bca1016c08ea73435400e9cac5c7e712",
+          "upstreamFileSha256": "c2a4cfb69592431f4b3a179c114909bb76a979d5748c19ca595c94133c623b12",
+          "upstreamBytes": 1080
+        }
+      ]
+    },
+    "balanced-match@4.0.4": {
+      "name": "balanced-match",
+      "version": "4.0.4",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+      "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+      "files": [
+        {
+          "path": "LICENSE.md",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "bf1eb47ed585246cac7fee8242b0571e65d908b318dbda3096a0603fd15145c2",
+          "upstreamFileSha256": "d408f38ffa3355c5faec517153295338892eb0f1ea43f57874bb23c6075979b5",
+          "upstreamBytes": 1155
+        }
+      ]
+    },
+    "brace-expansion@5.0.12": {
+      "name": "brace-expansion",
+      "version": "5.0.12",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz",
+      "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "cbcc559a1e7a7835d483f040c679ebc02158ad0c20c74341b2b18e1c5806cb96",
+          "upstreamFileSha256": "9c63a23124d68cd30cd316a94a1a0bca34f032786df6df69fc4b5f136bac8d2e",
+          "upstreamBytes": 1144
+        }
+      ]
+    },
+    "code-block-writer@13.0.3": {
+      "name": "code-block-writer",
+      "version": "13.0.3",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/code-block-writer/-/code-block-writer-13.0.3.tgz",
+      "integrity": "sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "3c4fbe4ea3568e060640525fb2c67d6323ea53803cc2629ad76a96f9c2819f48",
+          "upstreamFileSha256": "2769ffd3960ca1197b672b10d18b5216f423cb5c07dc328590548c47724d50fd",
+          "upstreamBytes": 1108
+        }
+      ]
+    },
+    "fdir@6.5.0": {
+      "name": "fdir",
+      "version": "6.5.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz",
+      "integrity": "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "21e376c46e9a3d167b112866cee7e38ea9315c2cca06d8e4287d956a43ad702c",
+          "upstreamFileSha256": "9a39f2aadab11a3697edd668ff2d8ad885b649737b7ab4d3bf12b34e5ada0c86",
+          "upstreamBytes": 1053
+        }
+      ]
+    },
+    "minimatch@11.0.3": {
+      "name": "minimatch",
+      "version": "11.0.3",
+      "license": "BlueOak-1.0.0",
+      "source": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.3.tgz",
+      "integrity": "sha512-iny/40PEGkNJQ5/Pv6z3nm6FbRAby32GeZRjCUJk2WnNDbgPSTcdI+DDvLqsgBdD4cD5sMtMheqPPnehCCa8Nw==",
+      "files": [
+        {
+          "path": "LICENSE.md",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "d1d8b7a22428eba7e46e7e373d014141266ead51a00c9291a4792278110a8997",
+          "upstreamFileSha256": "2c7c5d22ed5a8ee968c64757710979afcd77438c48b4a265b94e615babd8a901",
+          "upstreamBytes": 1550
+        }
+      ]
+    },
+    "path-browserify@1.0.1": {
+      "name": "path-browserify",
+      "version": "1.0.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/path-browserify/-/path-browserify-1.0.1.tgz",
+      "integrity": "sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "4c3837339ce7e7836604374dc2e20021948354b5172d6f1a229aa5eefb9b23a0",
+          "upstreamFileSha256": "a22b9d5763f574e5db347c30acc0b33eaf4846767c03d2e27d012e864e79a824",
+          "upstreamBytes": 1071
+        }
+      ]
+    },
+    "picomatch@4.0.7": {
+      "name": "picomatch",
+      "version": "4.0.7",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz",
+      "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "f4737cc209f5a561ecf4012412847e3d26a420ced99ce749ffe6081322be06de",
+          "upstreamFileSha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9",
+          "upstreamBytes": 1091
+        }
+      ]
+    },
+    "tinyglobby@0.2.17": {
+      "name": "tinyglobby",
+      "version": "0.2.17",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.17.tgz",
+      "integrity": "sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "698eb3c37b09976df5982e3a13e8694c2f3f4ad7d85450122e52f627b6b508ee",
+          "upstreamFileSha256": "22c68811e174cbbfb3813d4135918df4f540959c14d872e601d9abe83d3cde8f",
+          "upstreamBytes": 1076
+        }
+      ]
+    },
+    "ts-morph@28.0.0": {
+      "name": "ts-morph",
+      "version": "28.0.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/ts-morph/-/ts-morph-28.0.0.tgz",
+      "integrity": "sha512-Wp3tnZ2bzwxyTZMtgWVzXDfm7lB1Drz+y9DmmYH/L702PQhPyVrp3pkou3yIz4qjS14GY9kcpmLiOOMvl8oG1g==",
+      "files": [
+        {
+          "path": "LICENSE",
+          "kind": "complete-upstream-file",
+          "canonicalSha256": "675d36341f5bd44573287087a92e9f33bca1016c08ea73435400e9cac5c7e712",
+          "upstreamFileSha256": "c2a4cfb69592431f4b3a179c114909bb76a979d5748c19ca595c94133c623b12",
+          "upstreamBytes": 1080
+        }
+      ]
+    }
+  }
+}

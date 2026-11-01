@@ -25,6 +25,16 @@ npx mcp-stateless-migrator scan ./src
 
 Requires **Node >= 20**.
 
+## Package contents and maintenance
+
+Version 0.1.3 includes the dependency bundle described below.
+
+The package ships ts-morph through bundledDependencies. A root-only npm override does not constrain an installed package's dependency tree; the included closure carries the checked versions to consumers. The bundle preparation checks @ts-morph/common 0.29.0 and minimatch 11.0.3, then changes only that upstream manifest dependency range from minimatch ^10.0.1 to ^11.0.3. Third-party source files and package version numbers are unchanged.
+
+The measured archive is approximately **2.74 MB compressed and 15.65 MB unpacked** (decimal MB). Bundling increases download and disk use; a security update to an included dependency requires an updated package archive.
+
+For maintenance, run npm ci and npm run test:consumer from the repository checkout. npm pack runs prepack automatically: it builds the package and prepares the declared bundle. The consumer check packs twice, verifies identical bytes, installs the actual archive in a fresh project, checks npm ls and both dependency audits, and exercises the installed CLI or runtime. Review dependency updates together with the locked bundle and license proofs before distributing a new archive. The archive's dist/bundled-dependencies.json records the bundle and manifest adjustments.
+
 ## CLI
 
 | # | Command | Args | Output | Read-only | Destructive |
@@ -108,3 +118,5 @@ See [ECOSYSTEM.md](./ECOSYSTEM.md) for the full positioning matrix.
 ## License
 
 MIT — Copyright © 2026 Matthias Meyer (StudioMeyer).
+
+Bundled dependencies retain their complete upstream license texts in the archive. The package license applies to this project's own code; bundled third-party packages retain their respective terms. The consumer check verifies each approved package version's full license file, or its complete README license section, against pinned content hashes from integrity-verified official npm artifacts. Whitespace and line-ending differences are accepted; missing, empty or partial legal text is rejected.
